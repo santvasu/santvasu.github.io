@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<style>
+div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px;
+    resize: vertical;
+}
+table {
+    #border-collapse: collapse;
+    border: 1px solid black;
+
+    width: 100%;
+}
+
+th, td {
+    text-align: center;
+    border: 1px solid black;
+    font-size: 18px;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+#th {
+#    background-color: #4CAF50;
+#    color: white;
+#}
+</style>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$(document).ready(function(){
+   var brdScore1 = 0
+   var bsatScore1 = 0
+   var isHosteller = 0;
+   $("#hostel").hide();
+   $("input").change(function(){
+      brdScore1 = parseFloat($("#brdScore").val());
+      bsatScore1 = parseInt($("#bsatScore").val());
+      /*if (isNaN(brdScore1) || isNaN(bsatScore1) || brdScore1 < 0 
+           || brdScore1 > 100 || bsatScore1 < 0 || bsatScore1 >450) {
+        alert("Invalid input");
+        return;
+      } */
+      updateFeeReduction(brdScore1, bsatScore1, isHosteller);
+   });
+   $( "#hosteller" ).change(function(){
+      brdScore1 = $( "#slider_brdscore" ).slider("value" );
+      bsatScore1 = $( "#slider_bsatscore" ).slider("value" );
+      isHosteller = $("#hosteller").is(':checked');
+      //alert("3:OK " + brdScore1  + " " + bsatScore1 + " " + isHosteller);
+      updateFeeReduction(brdScore1, bsatScore1, isHosteller);
+    });
+    updateFeeReduction(brdScore1, bsatScore1, isHosteller);
+      //alert("1:OK " + brdScore1 + " " + bsatScore1);
+ });
+
+function updateFeeReduction(brdScore1, bsatScore1, isHosteller) {
+    var tutionFee = tutionFeePayable = 21650.0;
+    var hostelFee = hostelFeePayable = 15000.0;
+    var tutionFeeReduction = tutionFeeReductionPC = tutionFeeReductionAmt = 0.0;
+    var hostelFeeReduction = hostelFeeReductionPC = hostelFeeReductionAmt = 0.0;
+   //alert("2:OK " + brdScore1  + " " + bsatScore1 + " " + isHosteller);
+      if (bsatScore1 >= 300) {
+         tutionFeeReduction = 0.75;
+         hostelFeeReduction = 0.25;
+      } else if ( bsatScore1 >= 250 && bsatScore1 <=299 ) {
+         tutionFeeReduction = 0.50;
+         hostelFeeReduction = 0.25;
+      } else {
+         if (brdScore1 >= 95.00 ) {
+            tutionFeeReduction = 0.40;
+            hostelFeeReduction = 0.25;
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.50;
+            } 
+         } else if (brdScore1 >= 90.00) {
+            tutionFeeReduction = 0.25;
+            hostelFeeReduction = 0.25;
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.50;
+            } 
+         } else if  (brdScore1 >= 80.00) {
+            tutionFeeReduction = 0.15;
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.40;
+            }
+            if ( bsatScore1 >= 150 ) {
+               hostelFeeReduction = 0.25;
+            }
+         } else {
+            if ( bsatScore1 >= 200 && bsatScore1 <=249 ) {
+               tutionFeeReduction = 0.25;
+               hostelFeeReduction = 0.25;
+            } else if ( bsatScore1 >= 150 ) {
+               hostelFeeReduction = 0.25;
+            }
+         }
+      }
+    tutionFeeReductionPC = tutionFeeReduction * 100;
+    hostelFeeReductionPC = hostelFeeReduction * 100;
+    tutionFeeReductionAmt = tutionFee * tutionFeeReduction;
+    tutionFeeReductionAmtStr = 
+        tutionFeeReductionAmt.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    hostelFeeReductionAmt = hostelFee * hostelFeeReduction;
+    tutionFeePayable = tutionFee - tutionFeeReductionAmt;
+    hostelFeePayable = hostelFee - hostelFeeReductionAmt;
+    $("#tutionFeeReductionPC").html("<b>" + tutionFeeReductionPC + "%</b>");
+    $("#tutionFeeReductionAmt").html("<b>" + tutionFeeReductionAmtStr + "</b>");
+    $("#tutionFeePayable").html("<b>"+ tutionFeePayable.toFixed(2) + "</b>");
+    $("#hostelFeeReductionPC").html("<b>" + hostelFeeReductionPC + "%</b>");
+    $("#hostelFeeReductionAmt").html("<b>" + hostelFeeReductionAmt.toFixed(2) + "</b>");
+    $("#hostelFeePayable").html("<b>"+ hostelFeePayable.toFixed(2) + "</b>");
+      //alert("3:OK: tutionFeeReduction= "+ tutionFeeReduction  + " : HostelFeeReduction= " + hostelFeeReduction);
+}
+</script>
+</head>
+<body>
+
+<h2>Scholarship Calculator</h2>
+
+
+<div>
+<p style="font-size:20px">
+ Enter your Grade 12 overall aggregate in percentage(%) : <br>
+ <input id="brdScore" type="text" name="brdScore" placeholder="Eg. 95.45" style="width:50%"><br><br>
+ Enter your BITSAT Score (2017/2018): <br>
+ <input id="bsatScore" type="text" name="bsatScore" placeholder="Eg. 215" style="width:50%"><br><br>
+</p>
+ 
+<table style="width:50%">
+   <tbody>
+   <tr>
+      <th>TUITION FEE PER <br> SEMESTER</th>
+      <th>SCHOLARSHIP ELIGIBLE</th>
+      <th>SCHOLARSHIP AMOUNT</th>
+      <th>FEE PAYABLE IN <br> I SEMESTER DEDUCTING <br> SCHOLARSHIP AMOUNT</th>
+   </tr>
+   <tr>
+      <td><b>AED 21650 </b></td>
+      <td id="tutionFeeReductionPC"></td>
+      <td id="tutionFeeReductionAmt"></td>
+      <td id="tutionFeePayable"></td>
+   </tr>
+   </tbody>
+</table>
+<p>
+  Note: <br>
+    <li> The above scholarship is applicable on the first semester tuition fee.<br> 
+    <li> Scholarship of 20% will be awarded for the subsequent semesters subject to securing a CGPA of 9 on a scale of 10 at the end of each semester.<br>
+    <li> Vat of 5% is applicable on the fee payable.<br>
+</p>
+<br>
+<br>
+<table style="width:50%">
+   <tbody>
+   <tr>
+      <th>HOSTEL FEE PER <br> SEMESTER</th>
+      <th>CONCESSION ELIGIBLE</th>
+      <th>CONCESSION AMOUNT</th>
+      <th>FEE PAYABLE PER <br> SEMESTER DEDUCTING <br> CONCESSION AMOUNT</th>
+   </tr>
+   <tr>
+      <td><b> AED 15000 </b></td>
+      <td id="hostelFeeReductionPC"></td>
+      <td id="hostelFeeReductionAmt"></td>
+      <td id="hostelFeePayable"></td>
+   </tr>
+   </tbody>
+</table>
+
+  Note: <br>
+  <li> The above mentioned scholarship is applicable for the normal duration of the programme - 4 years (8 semesters) <br>
+  <li> Vat of 5% is applicable on the food cost of the hostel fee. <br>
+
+<!--
+<p id="tutionFee"><b>Tution Fee (AED) = 22733.00 </b></p>
+<p id="tutionFeeReduction"><b>Tution Fee Reduction = </b></p></b>
+<p id="tutionFeePayable"><b>Tution Fee Payble (AED) = </p>
+-->
+
+<!--
+Hosteller: <input  id="hosteller" type="checkbox" name="hosteller" > <br>
+
+<div id="hostel" >
+<p id="hostelFee"><b>Hostel Fee (AED) = 15000.00</b></p>
+<p id="hostelFeeReduction"><b>Hostel Fee Reduction = </b></p>
+<p id="hostelFeePayable"><b>Hostel Fee Payble (AED) = </b></p>  
+</div>
+-->
+
+</div>
+
+</body>
+</html>
